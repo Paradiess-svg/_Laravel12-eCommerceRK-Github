@@ -57,3 +57,5 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+Catatan: Ratu komputer telah di deploy dan menjadi https://ratubaguskomputer.id/ dan jika di sisi admin terlalu lama tak beroprasi, sesionnya akan habis, namun dia tidak redirect ke halaman login, malah menyebutkan pesan error seperti 403 atau 500.
