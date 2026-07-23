@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-#Ini file baru untuk ngelock 12 kategori
+{{-- Ini file baru untuk ngelock 12 kategori --}}
 
 @section('content')
     <nav class="flex mb-4" aria-label="Breadcrumb">
