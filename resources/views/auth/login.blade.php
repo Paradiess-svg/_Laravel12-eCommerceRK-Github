@@ -42,7 +42,11 @@
 
           @if ($errors->any())
             <div class="p-3 text-sm text-red-800 rounded-lg bg-red-100 dark:bg-red-900/50 dark:text-red-300 border border-red-200 dark:border-red-800" role="alert">
-                <span class="font-bold">Gagal Masuk!</span> Email atau password salah.
+                @if ($errors->has('session'))
+                    <span class="font-bold">Sesi Habis!</span> {{ $errors->first('session') }}
+                @else
+                    <span class="font-bold">Gagal Masuk!</span> Email atau password salah.
+                @endif
             </div>
           @endif
 

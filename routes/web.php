@@ -64,11 +64,11 @@ Route::middleware('auth')->group(function () {
     
 });
 
-// Route khusus Profil
+// Route khusus Profil (wajib login, kalau sesi habis diarahkan ke halaman login)
 Route::get('/profil', function () {
     $user = Illuminate\Support\Facades\Auth::user();
     return view('admin.profil.index', compact('user'));
-})->name('profil');
+})->middleware('auth')->name('profil');
 
 // === FRONTEND ROUTES (PUBLIC) ===
 Route::get('/', [FrontendController::class, 'index'])->name('home');

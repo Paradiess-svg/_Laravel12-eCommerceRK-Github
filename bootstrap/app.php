@@ -14,5 +14,20 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        // Token CSRF basi (biasanya karena sesi habis): jangan tampilkan "419 Page Expired"
+        // (Laravel sudah mengubahnya jadi HttpException 419 sebelum sampai ke sini)
+        $exceptions->render(function (\Symfony\Component\HttpKernel\Exception\HttpException $e, \Illuminate\Http\Request $request) {
+            if ($e->getStatusCode() !== 419 || $request->expectsJson()) {
+                return null;
+            }
+
+            if (! \Illuminate\Support\Facades\Auth::check()) {
+                return redirect()->guest(route('login'))
+                    ->withErrors(['session' => 'Sesi kamu sudah habis. Silakan login kembali.']);
+            }
+
+            return redirect()->back()
+                ->withInput($request->except(['_token', 'password', 'password_confirmation']))
+                ->withErrors(['session' => 'Halaman sudah kedaluwarsa. Silakan coba kirim ulang.']);
+        });
     })->create();
