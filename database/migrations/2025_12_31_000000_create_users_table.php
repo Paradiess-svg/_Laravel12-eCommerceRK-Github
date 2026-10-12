@@ -29,8 +29,8 @@ public function up(): void
         $table->rememberToken();
         $table->timestamps();
     });
-    
-    // ... biarkan kode sessions di bawahnya ...
+
+    // Tabel sessions & password_reset_tokens ada di migration 2026_10_12_000000
 }
     /**
      * Reverse the migrations.
@@ -38,7 +38,5 @@ public function up(): void
     public function down(): void
     {
         Schema::dropIfExists('users');
-        Schema::dropIfExists('password_reset_tokens');
-        Schema::dropIfExists('sessions');
     }
 };

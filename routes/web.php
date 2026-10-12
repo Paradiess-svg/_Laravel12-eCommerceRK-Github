@@ -53,7 +53,9 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::resource('produk', ProdukController::class);
-    Route::resource('karyawan', KaryawanController::class);
+    // Data karyawan dikelola lewat modal di Dashboard, jadi cuma store/update/destroy
+    Route::resource('karyawan', KaryawanController::class)->only(['store', 'update', 'destroy']);
+    Route::get('/karyawan', fn () => redirect()->route('dashboard'));
     Route::resource('cabang', CabangController::class);
     Route::resource('hero', HeroController::class);
     Route::resource('gallery', GalleryController::class);
