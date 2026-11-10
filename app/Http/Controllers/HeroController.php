@@ -36,14 +36,14 @@ class HeroController extends Controller
             'judul'     => 'required',
             'deskripsi' => 'nullable',
             'link'      => 'nullable',
-            'status'    => 'required',
-            'foto'      => 'required|image|max:10240'
-        ], $messages);
+            'status'    => 'required|in:aktif,nonaktif,promo,laris',
+            'foto'      => 'required|image|mimes:jpg,jpeg,png|max:10240'
+        ], $messages + ['foto.mimes' => 'Foto harus berformat PNG atau JPG.']);
 
         $validated['link'] = $request->link ?? '#';
 
-        if ($request->file('foto')) {
-            $validated['foto'] = $request->file('foto')->store('hero-images');
+        if ($request->hasFile('foto')) {
+            $validated['foto'] = $request->file('foto')->store('hero-images', config('filesystems.upload_disk'));
         }
 
         Hero::create($validated);
@@ -71,23 +71,21 @@ class HeroController extends Controller
         ];
 
         $rules = [
+            'kode_hero' => 'required|unique:heroes,kode_hero,'.$id,
             'judul'     => 'required',
             'deskripsi' => 'nullable',
             'link'      => 'nullable',
-            'status'    => 'required',
-            'foto'      => 'nullable|image|max:10240'
+            'status'    => 'required|in:aktif,nonaktif,promo,laris',
+            'foto'      => 'nullable|image|mimes:jpg,jpeg,png|max:10240'
         ];
 
-        if($request->kode_hero != $hero->kode_hero){
-            $rules['kode_hero'] = 'required|unique:heroes,kode_hero';
-        }
-
-        $validated = $request->validate($rules, $messages);
+        $validated = $request->validate($rules, $messages + ['foto.mimes' => 'Foto harus berformat PNG atau JPG.']);
         $validated['link'] = $request->link ?? '#';
 
-        if ($request->file('foto')) {
-            if ($hero->foto) Storage::delete($hero->foto);
-            $validated['foto'] = $request->file('foto')->store('hero-images');
+        if ($request->hasFile('foto')) {
+            $disk = config('filesystems.upload_disk');
+            if ($hero->foto) Storage::disk($disk)->delete($hero->foto);
+            $validated['foto'] = $request->file('foto')->store('hero-images', $disk);
         }
 
         $hero->update($validated);
@@ -98,7 +96,7 @@ class HeroController extends Controller
     public function destroy($id)
     {
         $hero = Hero::findOrFail($id);
-        if ($hero->foto) Storage::delete($hero->foto);
+        if ($hero->foto) Storage::disk(config('filesystems.upload_disk'))->delete($hero->foto);
         $hero->delete();
         return redirect()->back()->with('success', 'Hero banner dihapus!');
     }

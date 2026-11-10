@@ -25,17 +25,6 @@
     </div>
     @endif
 
-    @if ($errors->any())
-    <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 border border-red-300" role="alert">
-        <span class="font-medium">Gagal!</span> Periksa inputan anda.
-        <ul class="mt-1.5 list-disc list-inside">
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-    @endif
-
     <div class="bg-white rounded-lg shadow p-6">
         <div class="p-4 border-b border-gray-200 flex justify-between items-center">
             <h2 class="text-xl font-semibold text-gray-900"><i class="fa-solid fa-list mr-2"></i>Daftar Kategori</h2>
@@ -61,7 +50,7 @@
                 <td class="px-6 py-4">{{ $loop->iteration }}</td>
                 <td class="px-6 py-4">
                     @if($kategori->icon)
-                        <img src="{{ asset('storage/' . $kategori->icon) }}" class="w-10 h-10 object-contain">
+                        <img src="{{ asset('storage/' . $kategori->icon) }}" class="w-10 h-10 object-contain" onerror="this.onerror=null;this.src='{{ asset('assets/images/RatuKom_hitam.png') }}';">
                     @else
                         <i class="fa-solid fa-image text-2xl text-gray-400"></i>
                     @endif
@@ -126,7 +115,7 @@
                         <div>
                             <label class="block mb-2 text-sm font-medium text-gray-900">Icon (PNG/JPG)</label>
                             <p class="text-sm text-gray-500 mb-2"><i class="fas fa-info-circle"></i> <b>Perhatian!</b> Unggah foto/icon maksimal 2 MB dan hanya tipe file PNG/JPG.</p>
-                            <input name="icon" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50" type="file" required>
+                            <input name="icon" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50" type="file" accept="image/png,image/jpeg" required>
                         </div>
                     </div>
                     <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
@@ -165,7 +154,7 @@
                         <div>
                             <label class="block mb-2 text-sm font-medium text-gray-900">Ganti Icon (Opsional)</label>
                             <p class="text-sm text-gray-500 mb-2"><i class="fas fa-info-circle"></i> <b>Perhatian!</b> Unggah foto/icon maksimal 2 MB dan hanya tipe file PNG/JPG.</p>
-                            <input name="icon" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50" type="file">
+                            <input name="icon" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50" type="file" accept="image/png,image/jpeg">
                         </div>
                     </div>
                     <button type="submit" class="text-white bg-yellow-400 hover:bg-yellow-500 font-medium rounded-lg text-sm px-5 py-2.5 text-center">

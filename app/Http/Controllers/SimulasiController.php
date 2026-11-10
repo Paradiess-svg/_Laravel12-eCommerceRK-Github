@@ -26,8 +26,14 @@ class SimulasiController extends Controller
 
     public function store(Request $request)
     {
-        // Generate Kode Unik
-        $kode = 'RK-' . strtoupper(Str::random(5)) . date('d');
+        $request->validate([
+            'grand_total_hidden' => 'required|numeric|min:0',
+        ]);
+
+        // Generate Kode Unik (pastikan tidak bentrok dengan data lama)
+        do {
+            $kode = 'RK-' . strtoupper(Str::random(5)) . date('d');
+        } while (RakitPc::where('kode_rakitan', $kode)->exists());
 
         // Helper function biar rapi:
         // Kalau kosong -> "-"

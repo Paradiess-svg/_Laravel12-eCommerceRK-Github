@@ -13,10 +13,6 @@
     @if(session('success'))
     <div class="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 border border-green-300" role="alert"><span class="font-medium">Berhasil!</span> {{ session('success') }}</div>
     @endif
-    @if ($errors->any())
-    <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 border border-red-300" role="alert"><span class="font-medium">Gagal!</span> Periksa inputan anda.</div>
-    @endif
-
     <div class="bg-white rounded-lg shadow p-6">
         <div class="p-4 border-b border-gray-200 flex justify-between items-center">
             <h2 class="text-xl font-semibold text-gray-900"><i class="fa-solid fa-computer mr-2"></i>Daftar Produk</h2>
@@ -122,7 +118,7 @@
                                 </select>
                             @endif
                         </div>
-                        <div class="sm:col-span-2"><label class="block mb-2 text-sm font-medium text-gray-900">Foto</label><p class="text-sm text-gray-500 mb-2"><i class="fas fa-info-circle"></i> <b>Perhatian!</b> Unggah foto/icon maksimal 2 MB dan hanya tipe file PNG/JPG.</p><input name="foto" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50" type="file"></div>
+                        <div class="sm:col-span-2"><label class="block mb-2 text-sm font-medium text-gray-900">Foto</label><p class="text-sm text-gray-500 mb-2"><i class="fas fa-info-circle"></i> <b>Perhatian!</b> Unggah foto/icon maksimal 2 MB dan hanya tipe file PNG/JPG.</p><input name="foto" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50" type="file" accept="image/png,image/jpeg"></div>
                         <div class="sm:col-span-2"><label class="block mb-2 text-sm font-medium text-gray-900">Deskripsi</label><textarea name="deskripsi" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300"></textarea></div>
                     </div>
                     <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"><i class="fas fa-plus mr-2"></i> Simpan</button>
@@ -171,7 +167,7 @@
                                 </select>
                             @endif
                         </div>
-                        <div class="sm:col-span-2"><label class="block mb-2 text-sm font-medium text-gray-900">Ganti Foto (Opsional)</label><p class="text-sm text-gray-500 mb-2"><i class="fas fa-info-circle"></i> <b>Perhatian!</b> Unggah foto/icon maksimal 2 MB dan hanya tipe file PNG/JPG.</p><input name="foto" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50" type="file"></div>
+                        <div class="sm:col-span-2"><label class="block mb-2 text-sm font-medium text-gray-900">Ganti Foto (Opsional)</label><p class="text-sm text-gray-500 mb-2"><i class="fas fa-info-circle"></i> <b>Perhatian!</b> Unggah foto/icon maksimal 2 MB dan hanya tipe file PNG/JPG.</p><input name="foto" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50" type="file" accept="image/png,image/jpeg"></div>
                         <div class="sm:col-span-2"><label class="block mb-2 text-sm font-medium text-gray-900">Deskripsi</label><textarea id="edit-desk" name="deskripsi" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300"></textarea></div>
                     </div>
                     <button type="submit" class="text-white bg-yellow-400 hover:bg-yellow-500 font-medium rounded-lg text-sm px-5 py-2.5 text-center"><i class="fas fa-save mr-2"></i> Update</button>

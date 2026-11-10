@@ -4,6 +4,25 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 
+/*
+|--------------------------------------------------------------------------
+| Kompatibilitas PHP 8.5
+|--------------------------------------------------------------------------
+|
+| Laravel 12 masih memakai PDO::MYSQL_ATTR_SSL_CA di file config bawaan
+| framework. Di PHP 8.5 konstanta itu memunculkan pesan deprecated setiap
+| request/CLI. Pesan itu tidak menghentikan aplikasi, tapi mengotori output
+| dan bisa merusak response header. Kita abaikan khusus pesan tersebut;
+| deprecation lain tetap ditampilkan seperti biasa.
+|
+| Silakan hapus blok ini setelah framework memakai Pdo\Mysql::ATTR_SSL_CA.
+|
+*/
+set_error_handler(static function (int $errno, string $errstr): bool {
+    return $errno === E_DEPRECATED
+        && str_contains($errstr, 'PDO::MYSQL_ATTR_SSL_CA');
+});
+
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',

@@ -13,10 +13,6 @@
     @if(session('success'))
     <div class="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 border border-green-300" role="alert"><span class="font-medium">Berhasil!</span> {{ session('success') }}</div>
     @endif
-    @if ($errors->any())
-    <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 border border-red-300" role="alert"><span class="font-medium">Gagal!</span> Periksa inputan anda.</div>
-    @endif
-
     <div class="bg-white rounded-lg shadow p-6">
         <div class="p-4 border-b border-gray-200 flex justify-between items-center">
             <h2 class="text-xl font-semibold text-gray-900"><i class="fa-solid fa-store mr-2"></i>Daftar Cabang</h2>

@@ -32,23 +32,31 @@ class ProdukController extends Controller
 
     public function store(Request $request)
     {
+        $user = Auth::user();
+
         // Validasi Input
         $validated = $request->validate([
             'kode_produk' => 'required|unique:produks',
             'nama' => 'required',
-            'id_kategori' => 'required',
-            'id_cabang' => 'required',
-            'harga' => 'required|numeric',
-            'stok' => 'required|numeric',
+            'id_kategori' => 'required|exists:kategoris,id',
+            'id_cabang' => 'required|exists:cabangs,id',
+            'harga' => 'required|numeric|min:0',
+            'stok' => 'required|numeric|min:0',
             'deskripsi' => 'nullable',
-            'foto' => 'nullable|image|file|max:2048', // Max 2MB
+            'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048', // Max 2MB
         ], [
-            'foto.max' => 'Ukuran foto terlalu besar. Maksimal 2 MB.'
+            'foto.max' => 'Ukuran foto terlalu besar. Maksimal 2 MB.',
+            'foto.mimes' => 'Foto harus berformat PNG atau JPG.',
         ]);
 
+        // Admin biasa hanya boleh menambah produk untuk cabangnya sendiri.
+        if ($user->role === 'admin') {
+            $validated['id_cabang'] = $user->id_cabang;
+        }
+
         // Upload Foto
-        if ($request->file('foto')) {
-            $validated['foto'] = $request->file('foto')->store('produk-images');
+        if ($request->hasFile('foto')) {
+            $validated['foto'] = $request->file('foto')->store('produk-images', config('filesystems.upload_disk'));
         }
 
         Produk::create($validated);
@@ -59,33 +67,40 @@ class ProdukController extends Controller
     public function update(Request $request, $id)
     {
         $produk = Produk::findOrFail($id);
+        $user = Auth::user();
 
-        $rules = [
-            'nama' => 'required',
-            'id_kategori' => 'required',
-            'id_cabang' => 'required',
-            'harga' => 'required|numeric',
-            'stok' => 'required|numeric',
-            'deskripsi' => 'nullable',
-            'foto' => 'nullable|image|file|max:2048',
-        ];
-
-        // Cek unik kode produk (kecuali punya diri sendiri)
-        if($request->kode_produk != $produk->kode_produk){
-            $rules['kode_produk'] = 'required|unique:produks';
+        // Admin biasa tidak boleh mengubah produk cabang lain.
+        if ($user->role === 'admin' && $produk->id_cabang != $user->id_cabang) {
+            abort(403, 'Anda tidak memiliki akses ke produk cabang lain.');
         }
 
-        $validated = $request->validate($rules, [
-            'foto.max' => 'Ukuran foto terlalu besar. Maksimal 2 MB.'
+        $validated = $request->validate([
+            'kode_produk' => 'required|unique:produks,kode_produk,'.$produk->id,
+            'nama' => 'required',
+            'id_kategori' => 'required|exists:kategoris,id',
+            'id_cabang' => 'required|exists:cabangs,id',
+            'harga' => 'required|numeric|min:0',
+            'stok' => 'required|numeric|min:0',
+            'deskripsi' => 'nullable',
+            'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ], [
+            'foto.max' => 'Ukuran foto terlalu besar. Maksimal 2 MB.',
+            'foto.mimes' => 'Foto harus berformat PNG atau JPG.',
         ]);
 
+        // Admin biasa hanya boleh menyimpan produk di cabangnya sendiri.
+        if ($user->role === 'admin') {
+            $validated['id_cabang'] = $user->id_cabang;
+        }
+
         // Cek Ganti Foto
-        if ($request->file('foto')) {
+        if ($request->hasFile('foto')) {
+            $disk = config('filesystems.upload_disk');
             // Hapus foto lama jika ada
             if ($produk->foto) {
-                Storage::delete($produk->foto);
+                Storage::disk($disk)->delete($produk->foto);
             }
-            $validated['foto'] = $request->file('foto')->store('produk-images');
+            $validated['foto'] = $request->file('foto')->store('produk-images', $disk);
         }
 
         $produk->update($validated);
@@ -96,10 +111,26 @@ class ProdukController extends Controller
     public function destroy($id)
     {
         $produk = Produk::findOrFail($id);
-        
-        // Hapus foto dari penyimpanan
+        $user = Auth::user();
+
+        // Admin biasa tidak boleh menghapus produk cabang lain.
+        if ($user->role === 'admin' && $produk->id_cabang != $user->id_cabang) {
+            abort(403, 'Anda tidak memiliki akses ke produk cabang lain.');
+        }
+
+        $disk = config('filesystems.upload_disk');
+
+        // Hapus semua foto gallery produk dari penyimpanan sebelum record-nya
+        // ikut terhapus lewat cascade foreign key.
+        foreach ($produk->gallery as $gallery) {
+            if ($gallery->foto) {
+                Storage::disk($disk)->delete($gallery->foto);
+            }
+        }
+
+        // Hapus foto utama dari penyimpanan
         if ($produk->foto) {
-            Storage::delete($produk->foto);
+            Storage::disk($disk)->delete($produk->foto);
         }
 
         $produk->delete();

@@ -18,18 +18,21 @@ class GalleryController extends Controller
 
     public function store(Request $request)
     {
+        $disk = config('filesystems.upload_disk');
+
         $validated = $request->validate([
-            'id_produk' => 'required',
+            'id_produk' => 'required|exists:produks,id',
             'deskripsi' => 'nullable', // <--- GANTI JADI deskripsi
-            'foto'      => 'required|image|max:2048'
+            'foto'      => 'required|image|mimes:jpg,jpeg,png|max:2048'
         ], [
             'required' => ':attribute wajib diisi.',
             'image'    => 'File harus berupa gambar.',
-            'foto.max' => 'Ukuran foto terlalu besar. Maksimal 2 MB.'
+            'foto.max' => 'Ukuran foto terlalu besar. Maksimal 2 MB.',
+            'foto.mimes' => 'Foto harus berformat PNG atau JPG.'
         ]);
 
-        if ($request->file('foto')) {
-            $validated['foto'] = $request->file('foto')->store('gallery-images');
+        if ($request->hasFile('foto')) {
+            $validated['foto'] = $request->file('foto')->store('gallery-images', $disk);
         }
 
         Gallery::create($validated);
@@ -40,18 +43,20 @@ class GalleryController extends Controller
     public function update(Request $request, $id)
     {
         $gallery = Gallery::findOrFail($id);
+        $disk = config('filesystems.upload_disk');
 
         $validated = $request->validate([
-            'id_produk' => 'required',
+            'id_produk' => 'required|exists:produks,id',
             'deskripsi' => 'nullable', // <--- GANTI JADI deskripsi
-            'foto'      => 'nullable|image|max:2048'
+            'foto'      => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
         ], [
-            'foto.max' => 'Ukuran foto terlalu besar. Maksimal 2 MB.'
+            'foto.max' => 'Ukuran foto terlalu besar. Maksimal 2 MB.',
+            'foto.mimes' => 'Foto harus berformat PNG atau JPG.'
         ]);
 
-        if ($request->file('foto')) {
-            if ($gallery->foto) Storage::delete($gallery->foto);
-            $validated['foto'] = $request->file('foto')->store('gallery-images');
+        if ($request->hasFile('foto')) {
+            if ($gallery->foto) Storage::disk($disk)->delete($gallery->foto);
+            $validated['foto'] = $request->file('foto')->store('gallery-images', $disk);
         }
 
         $gallery->update($validated);
@@ -62,7 +67,7 @@ class GalleryController extends Controller
     public function destroy($id)
     {
         $gallery = Gallery::findOrFail($id);
-        if ($gallery->foto) Storage::delete($gallery->foto);
+        if ($gallery->foto) Storage::disk(config('filesystems.upload_disk'))->delete($gallery->foto);
         $gallery->delete();
         return redirect()->back()->with('success', 'Gallery dihapus!');
     }

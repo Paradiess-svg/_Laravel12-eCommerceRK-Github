@@ -40,6 +40,7 @@
 </head>
 
 <body class="bg-gray-100 text-gray-900">
+  @php $admin = Auth::user(); @endphp
   
   <nav class="fixed top-0 z-50 w-full bg-white border-b border-gray-200">
     <div class="px-3 py-3 lg:px-5 lg:pl-3">
@@ -60,12 +61,12 @@
           <button id="dropdownAvatarNameButton" data-dropdown-toggle="dropdownAvatarName" class="flex items-center text-sm pe-1 font-medium text-gray-900 rounded-full hover:text-blue-600 md:me-0 focus:ring-4 focus:ring-gray-100" type="button">
             <span class="sr-only">Open user menu</span>
             <div class="relative w-8 h-8 overflow-hidden bg-gray-100 rounded-full mr-2 border border-gray-200">
-                <img class="w-full h-full object-cover" 
-                     src="{{ Auth::user()->foto ? asset('storage/' . Auth::user()->foto) : asset('assets/images/RatuKom_hitam.png') }}" 
+                <img class="w-full h-full object-cover"
+                     src="{{ $admin?->foto ? asset('storage/' . $admin->foto) : asset('assets/images/RatuKom_hitam.png') }}"
                      alt="user photo"
-                     onerror="this.src='{{ asset('assets/images/RatuKom_hitam.png') }}';"> 
+                     onerror="this.src='{{ asset('assets/images/RatuKom_hitam.png') }}';">
             </div>
-            {{ Auth::user()->name }}
+            {{ $admin?->name }}
             <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
               <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
             </svg>
@@ -73,8 +74,8 @@
 
           <div id="dropdownAvatarName" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44">
             <div class="px-4 py-3 text-sm text-gray-900">
-              <div class="font-medium">{{ Auth::user()->role }}</div>
-              <div class="truncate">{{ Auth::user()->email }}</div>
+              <div class="font-medium">{{ $admin?->role }}</div>
+              <div class="truncate">{{ $admin?->email }}</div>
             </div>
             <ul class="py-2 text-sm text-gray-700" aria-labelledby="dropdownInformdropdownAvatarNameButtonationButton">
               <li>
@@ -182,6 +183,23 @@
 
   <div class="p-4 md:ml-64">
     <div class="p-4 mt-14">
+        @if(session('error'))
+        <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 border border-red-300" role="alert">
+            <span class="font-medium">Gagal!</span> {{ session('error') }}
+        </div>
+        @endif
+
+        @if($errors->any())
+        <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 border border-red-300" role="alert">
+            <span class="font-medium">Gagal!</span> Periksa inputan:
+            <ul class="mt-1 list-disc list-inside">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
+
         @yield('content')
     </div>
   </div>

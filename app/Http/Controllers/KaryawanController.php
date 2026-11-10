@@ -13,8 +13,20 @@ class KaryawanController extends Controller
 {
     // (Index tidak perlu karena view ada di Dashboard)
 
+    /**
+     * Hanya owner/super admin yang boleh mengelola data karyawan.
+     */
+    private function ensureCanManage(): void
+    {
+        if (Auth::user()->role === 'admin') {
+            abort(403, 'Anda tidak memiliki akses untuk mengelola data karyawan.');
+        }
+    }
+
     public function store(Request $request)
     {
+        $this->ensureCanManage();
+
         // KAMUS ERROR INDONESIA
         $messages = [
             'required' => ':attribute wajib diisi.',
@@ -30,19 +42,19 @@ class KaryawanController extends Controller
             'name'       => 'required',
             'email'      => 'required|email|unique:users,email',
             'password'   => 'required|min:6',
-            'jk'         => 'required',
+            'jk'         => 'required|in:L,P',
             'jabatan'    => 'required',
-            'role'       => 'required',
-            'id_cabang'  => 'nullable',
+            'role'       => 'required|in:admin,super_admin',
+            'id_cabang'  => 'nullable|exists:cabangs,id',
             'no_telfon'  => 'nullable',
             'alamat'     => 'nullable',
-            'foto'       => 'nullable|image|max:2048'
+            'foto'       => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
         ], $messages); // <--- Masukkan kamus di sini
 
         $validated['password'] = Hash::make($request->password);
 
-        if ($request->file('foto')) {
-            $validated['foto'] = $request->file('foto')->store('fotos');
+        if ($request->hasFile('foto')) {
+            $validated['foto'] = $request->file('foto')->store('fotos', config('filesystems.upload_disk'));
         }
 
         User::create($validated);
@@ -52,7 +64,14 @@ class KaryawanController extends Controller
 
     public function update(Request $request, $id)
     {
+        $this->ensureCanManage();
+
         $user = User::findOrFail($id);
+
+        // Akun owner hanya boleh diubah oleh owner itu sendiri.
+        if ($user->role === 'owner' && Auth::id() !== $user->id) {
+            return redirect()->back()->with('error', 'Data owner tidak bisa diubah oleh akun lain!');
+        }
 
         $messages = [
             'required' => ':attribute wajib diisi.',
@@ -64,12 +83,16 @@ class KaryawanController extends Controller
         ];
 
         $rules = [
+            'kode_admin' => 'required|unique:users,kode_admin,'.$id,
             'name'       => 'required',
             'email'      => 'required|email|unique:users,email,'.$id,
-            'jk'         => 'required',
+            'jk'         => 'required|in:L,P',
             'jabatan'    => 'required',
-            'role'       => 'required',
-            'foto'       => 'nullable|image|max:2048'
+            'role'       => 'required|in:admin,super_admin',
+            'id_cabang'  => 'nullable|exists:cabangs,id',
+            'no_telfon'  => 'nullable',
+            'alamat'     => 'nullable',
+            'foto'       => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
         ];
 
         if($request->filled('password')){
@@ -85,37 +108,32 @@ class KaryawanController extends Controller
             unset($validated['password']);
         }
 
-        $user->kode_admin = $request->kode_admin;
-        $user->no_telfon  = $request->no_telfon;
-        $user->alamat     = $request->alamat;
-        $user->id_cabang  = $request->id_cabang;
-        
-        $user->name = $validated['name'];
-        $user->email = $validated['email'];
-        $user->jk = $validated['jk'];
-        $user->jabatan = $validated['jabatan'];
-        $user->role = $validated['role'];
-        if(isset($validated['password'])) $user->password = $validated['password'];
-
-        if ($request->file('foto')) {
-            if ($user->foto) Storage::delete($user->foto);
-            $user->foto = $request->file('foto')->store('fotos');
+        if ($request->hasFile('foto')) {
+            $disk = config('filesystems.upload_disk');
+            if ($user->foto) Storage::disk($disk)->delete($user->foto);
+            $validated['foto'] = $request->file('foto')->store('fotos', $disk);
         }
 
-        $user->save();
+        $user->update($validated);
 
         return redirect()->route('dashboard')->with('success', 'Data karyawan berhasil diperbarui!');
     }
     
     public function destroy($id)
     {
+        $this->ensureCanManage();
+
         $user = User::findOrFail($id);
         
         if($user->role == 'owner'){
             return redirect()->back()->with('error', 'Owner tidak bisa dihapus!');
         }
 
-        if ($user->foto) Storage::delete($user->foto);
+        if (Auth::id() === $user->id) {
+            return redirect()->back()->with('error', 'Anda tidak bisa menghapus akun sendiri!');
+        }
+
+        if ($user->foto) Storage::disk(config('filesystems.upload_disk'))->delete($user->foto);
         $user->delete();
 
         return redirect()->route('dashboard')->with('success', 'Karyawan berhasil dihapus!');

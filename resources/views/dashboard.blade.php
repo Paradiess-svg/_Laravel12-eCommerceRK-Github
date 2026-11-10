@@ -22,15 +22,6 @@
         <span class="font-medium">Berhasil!</span> {{ session('success') }}
     </div>
     @endif
-    @if ($errors->any())
-    <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 border border-red-300" role="alert">
-        <span class="font-medium">Gagal!</span> Periksa inputan:
-        <ul class="list-disc list-inside mt-1">
-            @foreach ($errors->all() as $error) <li>{{ $error }}</li> @endforeach
-        </ul>
-    </div>
-    @endif
-
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <div class="bg-white rounded-lg shadow p-6 border-l-4 border-blue-500">
           <div class="flex items-center justify-between">
@@ -223,7 +214,7 @@
                                 <option value="admin">Admin</option><option value="super_admin">Super Admin</option>
                             </select>
                         </div>
-                        <div><label class="block mb-2 text-sm font-medium text-gray-900">Foto</label><input name="foto" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50" type="file"></div>
+                        <div><label class="block mb-2 text-sm font-medium text-gray-900">Foto</label><p class="text-sm text-gray-500 mb-2"><i class="fas fa-info-circle"></i> <b>Perhatian!</b> Unggah foto/icon maksimal 2 MB dan hanya tipe file PNG/JPG.</p><input name="foto" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50" type="file" accept="image/png,image/jpeg"></div>
                         <div class="sm:col-span-2"><label class="block mb-2 text-sm font-medium text-gray-900">Alamat</label><textarea name="alamat" rows="3" class="block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300"></textarea></div>
                     </div>
                     <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"><i class="fas fa-plus mr-2"></i> Simpan</button>
@@ -300,7 +291,7 @@
                                 <option value="admin">Admin</option><option value="super_admin">Super Admin</option>
                             </select>
                         </div>
-                        <div><label class="block mb-2 text-sm font-medium text-gray-900">Foto</label><input name="foto" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50" type="file"></div>
+                        <div><label class="block mb-2 text-sm font-medium text-gray-900">Foto</label><p class="text-sm text-gray-500 mb-2"><i class="fas fa-info-circle"></i> <b>Perhatian!</b> Unggah foto/icon maksimal 2 MB dan hanya tipe file PNG/JPG.</p><input name="foto" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50" type="file" accept="image/png,image/jpeg"></div>
                         <div class="sm:col-span-2"><label class="block mb-2 text-sm font-medium text-gray-900">Alamat</label><textarea id="edit-alamat" name="alamat" rows="3" class="block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300"></textarea></div>
                     </div>
                     <button type="submit" class="text-white bg-yellow-400 hover:bg-yellow-500 font-medium rounded-lg text-sm px-5 py-2.5 text-center"><i class="fas fa-save mr-2"></i> Update</button>

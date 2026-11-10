@@ -18,6 +18,7 @@ public function up(): void
         $table->foreignId('id_cabang')->nullable()->constrained('cabangs')->nullOnDelete();
         $table->string('name'); // nama
         $table->string('email')->unique();
+        $table->timestamp('email_verified_at')->nullable();
         $table->enum('jk', ['L', 'P'])->nullable(); // Jenis Kelamin
         $table->string('password');
         $table->string('jabatan')->nullable();

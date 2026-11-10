@@ -38,7 +38,7 @@
                         <a href="{{ route('katalog', ['kategori[]' => $kategori->id]) }}" class="block hover:scale-90 transition duration-300">
                             <div class="w-20 h-20 mx-auto flex items-center justify-center bg-slate-600 rounded-full mb-2 border-2 border-slate-500 overflow-hidden">
                                 @if($kategori->icon)
-                                    <img class="!w-12 !h-12 object-contain" src="{{ asset('storage/' . $kategori->icon) }}" alt="{{ $kategori->nama }}">
+                                    <img class="!w-12 !h-12 object-contain" src="{{ asset('storage/' . $kategori->icon) }}" alt="{{ $kategori->nama }}" onerror="this.onerror=null;this.src='{{ asset('assets/images/RatuKom_hitam.png') }}';">
                                 @else
                                     <i class="fa-solid fa-microchip text-3xl text-white"></i>
                                 @endif

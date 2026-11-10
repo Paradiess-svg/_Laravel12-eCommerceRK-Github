@@ -59,3 +59,33 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
 
 Catatan: Ratu komputer telah di deploy dan menjadi https://ratubaguskomputer.id/ dan jika di sisi admin terlalu lama tak beroprasi, sesionnya akan habis, namun dia tidak redirect ke halaman login, malah menyebutkan pesan error seperti 403 atau 500.
+
+## Catatan Lokal (Laragon)
+
+- Nyalakan **MySQL** dari Laragon, lalu sesuaikan `.env`:
+  `DB_HOST=127.0.0.1`, `DB_PORT=3306`, `DB_DATABASE=laravel12_e_commerce_rk`,
+  `DB_USERNAME=root`, `DB_PASSWORD=` (kosong).
+- Document root web server harus diarahkan ke folder `public`, bukan folder
+  root project. Alternatif paling gampang: jalankan `php artisan serve`.
+- Setelah mengubah `.env`, jalankan `php artisan config:clear`.
+- Error `PDO::MYSQL_ATTR_SSL_CA is deprecated` di PHP 8.5 sudah ditangani di
+  `bootstrap/app.php` (hanya pesan deprecation tersebut yang diabaikan).
+
+## Catatan Deploy (Exabytes / cPanel)
+
+- Jalankan `composer install --no-dev --optimize-autoloader`, lalu `php artisan migrate --force`.
+- Pastikan `.env` berisi `APP_URL` yang benar dan kredensial database hosting.
+- Upload gambar otomatis memilih disk:
+  - lokal: `public/storage` (tanpa perlu symlink),
+  - hosting: `../public_html/storage` (webroot Exabytes).
+  Jika struktur folder hosting berbeda, set `UPLOAD_DISK` dan/atau
+  `PUBLIC_HTML_STORAGE_PATH` di `.env`, lalu `php artisan config:clear`.
+- Folder tujuan upload harus writable oleh user PHP (biasanya permission `755`
+  atau `775`).
+- Halaman login/forgot-password tetap tampil walau `public/build` belum ada,
+  karena ada fallback Tailwind CDN. Untuk tampilan produksi yang optimal tetap
+  jalankan `npm install && npm run build` bila Node.js tersedia.
+- Pendaftaran publik (`/register`) sengaja dimatikan. Akun admin dibuat oleh
+  owner/super admin melalui menu **Dashboard > Karyawan**.
+- Sesi yang habis sekarang diarahkan kembali ke halaman login dengan pesan yang
+  jelas, bukan halaman 403/500.

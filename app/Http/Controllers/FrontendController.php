@@ -56,10 +56,12 @@ class FrontendController extends Controller
         }
 
         // B. FILTER KATEGORI (Checkbox Array)
+        // Link dari homepage mengirim kategori[]=1, sedangkan orang bisa saja
+        // membuka ?kategori=1. Keduanya kita dukung.
         if ($request->filled('kategori')) {
-            $kategoriIds = $request->kategori;
+            $kategoriIds = (array) $request->kategori;
             // Kalau user centang sesuatu dan itu bukan "semua"
-            if (is_array($kategoriIds) && !in_array('semua', $kategoriIds)) {
+            if (! in_array('semua', $kategoriIds)) {
                 $query->whereIn('id_kategori', $kategoriIds);
             }
         }

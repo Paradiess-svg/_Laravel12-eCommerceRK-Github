@@ -1,5 +1,19 @@
 <?php
 
+// Lokasi folder storage di dalam webroot hosting (khusus Exabytes/cPanel).
+// Folder public_html biasanya sejajar dengan folder aplikasi.
+$publicHtmlStorage = env('PUBLIC_HTML_STORAGE_PATH', base_path('../public_html/storage'));
+
+// Kalau path di .env ditulis relatif (mis. ../public_html/storage), ubah ke
+// path absolut supaya is_dir() dan disk local tetap konsisten.
+$isAbsolutePath = str_starts_with($publicHtmlStorage, '/')
+    || str_starts_with($publicHtmlStorage, '\\')
+    || preg_match('/^[A-Za-z]:[\\\\\\/]/', $publicHtmlStorage);
+
+if (! $isAbsolutePath) {
+    $publicHtmlStorage = base_path($publicHtmlStorage);
+}
+
 return [
 
     /*
@@ -14,6 +28,28 @@ return [
     */
 
     'default' => env('FILESYSTEM_DISK', 'local'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Disk Upload Gambar
+    |--------------------------------------------------------------------------
+    |
+    | Disk yang dipakai untuk menyimpan foto/icon hasil upload. Di lokal
+    | default-nya "uploads" (langsung ke public/storage, jadi tidak perlu
+    | symlink). Di hosting Exabytes, folder public_html biasanya sejajar
+    | dengan folder aplikasi, sehingga otomatis memakai disk "public_html".
+    | Nilainya bisa dipaksa lewat UPLOAD_DISK di .env.
+    |
+    | Catatan: yang dicek adalah folder induknya (public_html), bukan folder
+    | storage-nya. Jadi kalau storage belum ada, disk tetap memakai
+    | public_html dan Laravel akan membuat foldernya otomatis.
+    |
+    */
+
+    'upload_disk' => env(
+        'UPLOAD_DISK',
+        is_dir(dirname($publicHtmlStorage)) ? 'public_html' : 'uploads'
+    ),
 
     /*
     |--------------------------------------------------------------------------
@@ -41,6 +77,29 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
+            'url' => env('APP_URL').'/storage',
+            'visibility' => 'public',
+            'throw' => false,
+            'report' => false,
+        ],
+
+        // Upload langsung ke folder yang di-serve web (public/storage),
+        // supaya file yang baru diunggah langsung muncul tanpa symlink.
+        'uploads' => [
+            'driver' => 'local',
+            'root' => public_path('storage'),
+            'url' => env('APP_URL').'/storage',
+            'visibility' => 'public',
+            'throw' => false,
+            'report' => false,
+        ],
+
+        // Khusus hosting Exabytes: tulis langsung ke storage di dalam
+        // public_html (webroot), karena symlink tidak reliable di sana.
+        // public_html dan folder aplikasi adalah sibling folder.
+        'public_html' => [
+            'driver' => 'local',
+            'root' => $publicHtmlStorage,
             'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
             'throw' => false,

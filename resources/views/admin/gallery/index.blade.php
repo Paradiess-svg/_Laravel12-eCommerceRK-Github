@@ -71,13 +71,13 @@
                         <div>
                             <label class="block mb-2 text-sm font-medium text-gray-900">Nama Produk</label>
                             <select name="id_produk" class="bg-gray-50 border border-gray-300 text-sm rounded-lg block w-full p-2.5" required>
-                                <option selected>Pilih Produk</option>
+                                <option value="" disabled selected>-- Pilih Produk --</option>
                                 @foreach($produks as $prod)
                                     <option value="{{ $prod->id }}">{{ $prod->nama }} - {{ $prod->cabang->nama ?? 'Tanpa Cabang' }}</option>
                                 @endforeach
                             </select>
                         </div>
-                        <div><label class="block mb-2 text-sm font-medium text-gray-900">Foto</label><p class="text-sm text-gray-500 mb-2"><i class="fas fa-info-circle"></i> <b>Perhatian!</b> Unggah foto/icon maksimal 2 MB dan hanya tipe file PNG/JPG.</p><input name="foto" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50" type="file" required></div>
+                        <div><label class="block mb-2 text-sm font-medium text-gray-900">Foto</label><p class="text-sm text-gray-500 mb-2"><i class="fas fa-info-circle"></i> <b>Perhatian!</b> Unggah foto/icon maksimal 2 MB dan hanya tipe file PNG/JPG.</p><input name="foto" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50" type="file" accept="image/png,image/jpeg" required></div>
                         <div><label class="block mb-2 text-sm font-medium text-gray-900">Deskripsi</label><textarea name="deskripsi" rows="3" class="block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300"></textarea></div>
                     </div>
                     <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"><i class="fas fa-plus mr-2"></i> Simpan</button>
@@ -105,7 +105,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div><label class="block mb-2 text-sm font-medium text-gray-900">Ganti Foto</label><p class="text-sm text-gray-500 mb-2"><i class="fas fa-info-circle"></i> <b>Perhatian!</b> Unggah foto/icon maksimal 2 MB dan hanya tipe file PNG/JPG.</p><input name="foto" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50" type="file"></div>
+                        <div><label class="block mb-2 text-sm font-medium text-gray-900">Ganti Foto</label><p class="text-sm text-gray-500 mb-2"><i class="fas fa-info-circle"></i> <b>Perhatian!</b> Unggah foto/icon maksimal 2 MB dan hanya tipe file PNG/JPG.</p><input name="foto" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50" type="file" accept="image/png,image/jpeg"></div>
                         <div><label class="block mb-2 text-sm font-medium text-gray-900">Deskripsi</label><textarea id="edit-desk" name="deskripsi" rows="3" class="block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300"></textarea></div>
                     </div>
                     <button type="submit" class="text-white bg-yellow-400 hover:bg-yellow-500 font-medium rounded-lg text-sm px-5 py-2.5 text-center"><i class="fas fa-save mr-2"></i> Update</button>

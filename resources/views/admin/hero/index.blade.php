@@ -13,10 +13,6 @@
     @if(session('success'))
     <div class="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 border border-green-300" role="alert"><span class="font-medium">Berhasil!</span> {{ session('success') }}</div>
     @endif
-    @if ($errors->any())
-    <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 border border-red-300" role="alert"><span class="font-bold">Gagal Menyimpan!</span><ul class="mt-1 list-disc list-inside">@foreach ($errors->all() as $error) <li>{{ $error }}</li> @endforeach</ul></div>
-    @endif
-
     <div class="bg-white rounded-lg shadow p-6">
         <div class="p-4 border-b border-gray-200 flex justify-between items-center">
             <h2 class="text-xl font-semibold text-gray-900"><i class="fas fa-newspaper mr-2"></i>Daftar Hero</h2>
@@ -81,7 +77,7 @@
                         <div><label class="block mb-2 text-sm font-medium text-gray-900">Kode Hero</label><input type="text" name="kode_hero" class="bg-gray-50 border border-gray-300 text-sm rounded-lg block w-full p-2.5" placeholder="H01" required></div>
                         <div><label class="block mb-2 text-sm font-medium text-gray-900">Judul</label><input type="text" name="judul" class="bg-gray-50 border border-gray-300 text-sm rounded-lg block w-full p-2.5" placeholder="Hero Pertama" required></div>
                         <div class="sm:col-span-2"><label class="block mb-2 text-sm font-medium text-gray-900">Link (Opsional)</label><input type="text" name="link" class="bg-gray-50 border border-gray-300 text-sm rounded-lg block w-full p-2.5" placeholder="https://..."></div>
-                        <div class="sm:col-span-2"><label class="block mb-2 text-sm font-medium text-gray-900">Foto Banner</label><p class="text-sm text-gray-500 mb-2"><i class="fas fa-info-circle"></i> <b>Perhatian!</b> Unggah foto/icon maksimal 10 MB dan hanya tipe file PNG/JPG.</p><input name="foto" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50" type="file" required></div>
+                        <div class="sm:col-span-2"><label class="block mb-2 text-sm font-medium text-gray-900">Foto Banner</label><p class="text-sm text-gray-500 mb-2"><i class="fas fa-info-circle"></i> <b>Perhatian!</b> Unggah foto/icon maksimal 10 MB dan hanya tipe file PNG/JPG.</p><input name="foto" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50" type="file" accept="image/png,image/jpeg" required></div>
                         <div>
                             <label class="block mb-2 text-sm font-medium text-gray-900">Status</label>
                             <select name="status" class="bg-gray-50 border border-gray-300 text-sm rounded-lg block w-full p-2.5">
@@ -110,7 +106,7 @@
                         <div><label class="block mb-2 text-sm font-medium text-gray-900">Kode Hero</label><input type="text" id="edit-kode" name="kode_hero" class="bg-gray-50 border border-gray-300 text-sm rounded-lg block w-full p-2.5" required></div>
                         <div><label class="block mb-2 text-sm font-medium text-gray-900">Judul</label><input type="text" id="edit-judul" name="judul" class="bg-gray-50 border border-gray-300 text-sm rounded-lg block w-full p-2.5" required></div>
                         <div class="sm:col-span-2"><label class="block mb-2 text-sm font-medium text-gray-900">Link</label><input type="text" id="edit-link" name="link" class="bg-gray-50 border border-gray-300 text-sm rounded-lg block w-full p-2.5"></div>
-                        <div class="sm:col-span-2"><label class="block mb-2 text-sm font-medium text-gray-900">Ganti Foto (Opsional)</label><p class="text-sm text-gray-500 mb-2"><i class="fas fa-info-circle"></i> <b>Perhatian!</b> Unggah foto/icon maksimal 10 MB dan hanya tipe file PNG/JPG.</p><input name="foto" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50" type="file"></div>
+                        <div class="sm:col-span-2"><label class="block mb-2 text-sm font-medium text-gray-900">Ganti Foto (Opsional)</label><p class="text-sm text-gray-500 mb-2"><i class="fas fa-info-circle"></i> <b>Perhatian!</b> Unggah foto/icon maksimal 10 MB dan hanya tipe file PNG/JPG.</p><input name="foto" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50" type="file" accept="image/png,image/jpeg"></div>
                         <div>
                             <label class="block mb-2 text-sm font-medium text-gray-900">Status</label>
                             <select id="edit-status" name="status" class="bg-gray-50 border border-gray-300 text-sm rounded-lg block w-full p-2.5">

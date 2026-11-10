@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cabang;
+use App\Models\Produk;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class CabangController extends Controller
@@ -51,7 +53,19 @@ class CabangController extends Controller
 
     public function destroy($id)
     {
-        Cabang::findOrFail($id)->delete();
+        $cabang = Cabang::findOrFail($id);
+
+        // Jangan biarkan produk/karyawan ikut terhapus atau kehilangan cabang
+        // karena foreign key cascade/nullOnDelete.
+        if (Produk::where('id_cabang', $cabang->id)->exists()) {
+            return redirect()->back()->with('error', 'Cabang tidak bisa dihapus karena masih memiliki produk.');
+        }
+
+        if (User::where('id_cabang', $cabang->id)->exists()) {
+            return redirect()->back()->with('error', 'Cabang tidak bisa dihapus karena masih memiliki karyawan.');
+        }
+
+        $cabang->delete();
         return redirect()->back()->with('success', 'Cabang berhasil dihapus!');
     }
 }
